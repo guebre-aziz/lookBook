@@ -34,10 +34,8 @@ app.use(morgan("tiny"))
 route.get("", (req, res) => {res.render("index")})
 app.use("/", route)
 
-// load router API v1 -----> AWARE CHANGING PATH <-----
+// load router API v1 ----->BE AWARE CHANGING PATH <-----
 app.use("/api/v1", require("./api-v1/routes/router"))
-
-
 
 app.listen(PORT, () => {
     console.log(`server is running on http://localhost:${PORT}`)
