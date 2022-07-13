@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const UserCollection = require("../models/user-model");
+const UserModel = require("../models/user-model");
 
 exports.create = (req, res) => {
   // check
@@ -10,7 +10,7 @@ exports.create = (req, res) => {
   }
 
   // new user
-  const user = new UserCollection({
+  const user = new UserModel({
     name: req.body.name,
     surname: req.body.surname,
     email: req.body.email,
@@ -33,7 +33,7 @@ exports.findUserById = async (req, res) => {
 
   if (mongoose.Types.ObjectId.isValid(id)) {
     try {
-      const userData = await UserCollection.findById(id);
+      const userData = await UserModel.findById(id);
       if (!userData) {
         res.status(404);
         res.send({ message: `user with id ${id} not found` });
@@ -55,7 +55,7 @@ exports.findUserById = async (req, res) => {
 
 exports.findAllUsers = async (req, res) => {
   try {
-    const users = await UserCollection.find();
+    const users = await UserModel.find();
     res.status(200);
     res.send(users);
   } catch (err) {
@@ -80,7 +80,7 @@ exports.update = (req, res) => {
     return;
   }
 
-  UserCollection.findByIdAndUpdate(
+  UserModel.findByIdAndUpdate(
     { _id: id },
     {
       name: req.body.name,
@@ -110,7 +110,7 @@ exports.remove = async (req, res) => {
     return;
   }
 
-  UserCollection.findByIdAndDelete(id)
+  UserModel.findByIdAndDelete(id)
     .then((data) => {
       if (!data) {
         res.status(404);
@@ -124,6 +124,6 @@ exports.remove = async (req, res) => {
     })
     .catch((err) => {
       res.status(500);
-      res.send({ message: err.message || `error deleting report` });
+      res.send({ message: err.message || `error deleting user` });
     });
 };

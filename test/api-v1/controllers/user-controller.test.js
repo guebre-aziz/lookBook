@@ -237,7 +237,7 @@ describe("Users controller functions tests", () => {
       expect(res.status).to.be.calledWith(404);
     });
 
-    it("should return status 400 if invalid id", async () => {
+    it("should return status 400 if not valid id", async () => {
       const req = {
         params: { id: "invalid id" },
       };

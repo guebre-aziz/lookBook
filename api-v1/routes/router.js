@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const upload = require("../../services/upload");
 const route = express.Router();
 const usersController = require("../controllers/users-controller");
 const productsController = require("../controllers/products-controller");
@@ -11,6 +13,10 @@ route.get("/users", usersController.findAllUsers);
 route.put("/users/:id", usersController.update);
 route.delete("/users/:id", usersController.remove);
 
-//
+// products API
+route.post("/products", upload, productsController.create);
+route.get("/products/:id", productsController.findProductById);
+route.put("/products/:id", upload, productsController.update);
+route.delete("/products/:id", productsController.remove);
 
 module.exports = route;
