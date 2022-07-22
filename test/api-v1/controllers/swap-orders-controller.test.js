@@ -3,11 +3,17 @@ const mongoose = require("mongoose");
 const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
 const {
-  findUserById,
-} = require("../../../api-v1/controllers/users-controller");
-const { create } = require("../../../api-v1/controllers/users-controller");
-const { update } = require("../../../api-v1/controllers/users-controller");
-const { remove } = require("../../../api-v1/controllers/users-controller");
+  findSwapById,
+} = require("../../../api-v1/controllers/swap-orders-controller");
+const {
+  create,
+} = require("../../../api-v1/controllers/swap-orders-controller");
+const {
+  update,
+} = require("../../../api-v1/controllers/swap-orders-controller");
+const {
+  remove,
+} = require("../../../api-v1/controllers/swap-orders-controller");
 const expect = chai.expect;
 chai.use(sinonChai);
 const {
@@ -15,7 +21,7 @@ const {
   dbDisconnect,
 } = require("../../../utils/test-utils.js/dbHandler");
 
-describe("Users controller functions tests", () => {
+describe("Swap orders controller functions tests", () => {
   before(async (done) => {
     dbConnect();
     done();
@@ -47,26 +53,17 @@ describe("Users controller functions tests", () => {
       expect(res.status).to.have.been.calledWith(400);
     });
 
-    it("should return status 201 if user's created", async () => {
+    it("should return status 201 if swap order's created", async () => {
       mongoose.Model.prototype.save = sandbox.stub().returns(Promise.resolve());
 
       await create(req, res);
       expect(res.status).to.have.been.calledWith(201);
     });
-
-    // TODO: rechek here <<<<<<<<
-
-    /* it("should return status 500 if error occurred", async () => {
-      mongoose.Model.prototype.save = sandbox.stub().returns(Promise.reject());
-
-      await create(req, res);
-      expect(res.status).to.have.been.calledWith(500);
-    }); */
   });
 
   //------------------------------------------------------------------
 
-  describe("findUserById", () => {
+  describe("findSwapById", () => {
     afterEach(function () {
       sinon.restore();
     });
@@ -84,23 +81,23 @@ describe("Users controller functions tests", () => {
     const doc = { data: "user data" };
     const err = new Error("error");
 
-    it("should return status 200 and user data if found", async () => {
+    it("should return status 200 and swap order data if found", async () => {
       sinon.stub(mongoose.Model, "findById").yields(null, doc);
-      await findUserById(req, res);
+      await findSwapById(req, res);
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(doc);
     });
 
-    it("should return status 404 if user not found", async () => {
+    it("should return status 404 if swap order not found", async () => {
       sinon.stub(mongoose.Model, "findById").yields(null, null);
-      await findUserById(req, res);
+      await findSwapById(req, res);
 
       expect(res.status).to.have.been.calledWith(404);
     });
 
     it("should return status 400 and error message if invalid id", async () => {
-      findUserById({ params: { id: "invalid id" } }, res);
+      findSwapById({ params: { id: "invalid id" } }, res);
 
       expect(res.status).to.have.been.calledWith(400);
       expect(res.send).to.have.been.calledWith({ message: "not valid id" });
@@ -109,7 +106,7 @@ describe("Users controller functions tests", () => {
     it("should return status 500 and error message error occurred", async () => {
       sinon.stub(mongoose.Model, "findById").yields(err, null);
 
-      findUserById(req, res);
+      findSwapById(req, res);
 
       expect(res.status).to.have.been.calledWith(500);
       expect(res.send).to.have.been.calledWith({ message: "error" });
@@ -128,7 +125,7 @@ describe("Users controller functions tests", () => {
       send: sinon.spy(),
       status: sinon.stub().returns({ json: statusJsonSpy }),
     };
-    const doc = { data: "user data updated" };
+    const doc = { data: "swap order data updated" };
     const err = new Error("error");
 
     it("should return status 200 and data updated", async () => {
@@ -138,6 +135,7 @@ describe("Users controller functions tests", () => {
         body: "body",
       };
       await update(req, res);
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(doc);
     });
@@ -147,6 +145,7 @@ describe("Users controller functions tests", () => {
         params: { id: "invalid id" },
       };
       await update(req, res);
+
       expect(res.status).to.have.been.calledWith(400);
       expect(res.send).to.have.been.calledWith({ message: "not valid id" });
     });
@@ -157,6 +156,7 @@ describe("Users controller functions tests", () => {
         body: null,
       };
       await update(req, res);
+
       expect(res.status).to.have.been.calledWith(400);
       expect(res.send).to.have.been.calledWith({
         message: "body can not be empty",
@@ -170,6 +170,7 @@ describe("Users controller functions tests", () => {
         body: "body",
       };
       await update(req, res);
+
       expect(res.status).to.have.been.calledWith(404);
     });
 
@@ -197,7 +198,7 @@ describe("Users controller functions tests", () => {
       send: sinon.spy(),
       status: sinon.stub().returns({ json: statusJsonSpy }),
     };
-    const doc = { data: "user data deleted" };
+    const doc = { data: "swap order deleted" };
     const err = new Error("error");
 
     it("should return status 200 and successfull message", async () => {
@@ -206,9 +207,10 @@ describe("Users controller functions tests", () => {
         params: { id: new mongoose.Types.ObjectId() },
       };
       await remove(req, res);
+
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({
-        message: "user deleted successfully",
+        message: "swap order deleted successfully",
       });
     });
 
@@ -217,8 +219,19 @@ describe("Users controller functions tests", () => {
         params: { id: "invalid id" },
       };
       await remove(req, res);
+
       expect(res.status).to.have.been.calledWith(400);
       expect(res.send).to.have.been.calledWith({ message: "not valid id" });
+    });
+
+    it("should return status 404 if swap order not found", async () => {
+      sinon.stub(mongoose.Model, "findByIdAndDelete").yields(null, null);
+      const req = {
+        params: { id: new mongoose.Types.ObjectId() },
+      };
+      await remove(req, res);
+
+      expect(res.status).to.have.been.calledWith(404);
     });
 
     it("should return status 500 and error message if error occurred", async () => {
@@ -227,6 +240,7 @@ describe("Users controller functions tests", () => {
         params: { id: new mongoose.Types.ObjectId() },
       };
       await remove(req, res);
+
       expect(res.status).to.have.been.calledWith(500);
       expect(res.send).to.have.been.calledWith({ message: "error" });
     });

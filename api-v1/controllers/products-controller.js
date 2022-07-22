@@ -85,8 +85,6 @@ exports.update = (req, res) => {
 
   const images = [];
 
-  console.log(req.files);
-
   if (req.files) {
     req.files.forEach((file) => {
       images.push({

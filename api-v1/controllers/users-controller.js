@@ -1,22 +1,20 @@
+const isEmpty = require("../../utils/isEmpty");
 const { default: mongoose } = require("mongoose");
 const UserModel = require("../models/user-model");
 
 exports.create = (req, res) => {
-  // check
-  if (!req.body) {
+  if (isEmpty(req.body)) {
     res.status(400);
     res.send({ message: "Body cannot be empty" });
     return;
   }
 
-  // new user
   const user = new UserModel({
     name: req.body.name,
     surname: req.body.surname,
     email: req.body.email,
   });
 
-  // save in DB
   user
     .save()
     .then((data) => {
@@ -28,42 +26,30 @@ exports.create = (req, res) => {
     });
 };
 
-exports.findUserById = async (req, res) => {
+exports.findUserById = (req, res) => {
   const id = req.params?.id;
-
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    try {
-      const userData = await UserModel.findById(id);
-      if (!userData) {
-        res.status(404);
-        res.send({ message: `user with id ${id} not found` });
-      } else {
-        res.status(200);
-        res.send(userData);
-      }
-    } catch (err) {
-      res.status(500);
-      res.send({
-        message: err.message || `error retriving user with id: ${id}`,
-      });
-    }
-  } else {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400);
     res.send({ message: "not valid id" });
+    return;
   }
-};
 
-exports.findAllUsers = async (req, res) => {
-  try {
-    const users = await UserModel.find();
-    res.status(200);
-    res.send(users);
-  } catch (err) {
-    res.status(500);
-    res.send({
-      message: err.message || "error occurred retriving users informations",
-    });
-  }
+  UserModel.findById(id, function (err, doc) {
+    if (err) {
+      res.status(500);
+      res.send({
+        message: err.message,
+      });
+    } else if (!doc) {
+      res.status(404);
+      res.send({
+        message: ` user with id: ${id} not found`,
+      });
+    } else {
+      res.status(200);
+      res.send(doc);
+    }
+  });
 };
 
 exports.update = (req, res) => {
@@ -74,30 +60,39 @@ exports.update = (req, res) => {
     res.send({ message: "not valid id" });
     return;
   }
-  if (!req.body) {
+  if (isEmpty(req.body)) {
     res.status(400);
     res.send({ message: "body can not be empty" });
     return;
   }
 
+  const data = {
+    name: req.body.name,
+    surname: req.body.surname,
+    email: req.body.email,
+  };
+
   UserModel.findByIdAndUpdate(
-    { _id: id },
-    {
-      name: req.body.name,
-      surname: req.body.surname,
-      email: req.body.email,
-    },
-    { returnOriginal: false }
-  )
-    .then((data) => {
-      res.status(200);
-      res.send(data);
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .send({ message: err.message || `error updating user with id: ${id}` });
-    });
+    id,
+    data,
+    { returnOriginal: false },
+    function (err, doc) {
+      if (err) {
+        res.status(500);
+        res.send({
+          message: err.message || `error updating user with id: ${id}`,
+        });
+      } else if (!doc) {
+        res.status(404);
+        res.send({
+          message: ` user with id: ${id} not found`,
+        });
+      } else {
+        res.status(200);
+        res.send(doc);
+      }
+    }
+  );
 };
 
 // delete report
@@ -110,20 +105,19 @@ exports.remove = async (req, res) => {
     return;
   }
 
-  UserModel.findByIdAndDelete(id)
-    .then((data) => {
-      if (!data) {
-        res.status(404);
-        res.send({
-          message: `error deleting user with id: ${id}, it may be already deleted`,
-        });
-      } else {
-        res.status(200);
-        res.send({ message: "user deleted successfully" });
-      }
-    })
-    .catch((err) => {
+  UserModel.findByIdAndDelete(id, function (err, doc) {
+    if (err) {
       res.status(500);
-      res.send({ message: err.message || `error deleting user` });
-    });
+      res.send({ message: err.message });
+    }
+    if (!doc) {
+      res.status(404);
+      res.send({
+        message: `error deleting user with id: ${id}, it may be already deleted`,
+      });
+    } else {
+      res.status(200);
+      res.send({ message: "user deleted successfully" });
+    }
+  });
 };
