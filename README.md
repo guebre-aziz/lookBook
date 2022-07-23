@@ -4,7 +4,7 @@
 
 ## Description
 
-  Deleveloped with Node.js, Express and MongoDB, it provide different API end-point to handle users, product and swap order.
+  Deleveloped with Node.js, Express and MongoDB, it provide different API end-point to handle users, products and swap orders.
  
 ## Getting Started
   In the file "config.env" provide: PORT="xxx"
