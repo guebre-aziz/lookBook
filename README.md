@@ -7,8 +7,13 @@
   Deleveloped with Node.js, Express and MongoDB, it provide different API end-point to handle users, products and swap orders.
  
 ## Getting Started
-  In the file "config.env" provide: PORT="xxx"
+  * Create in the root the file "config.env" and provide: PORT="xxx"
                                     MONGODB_URI="your db uri".
+                                    
+  * "npm start" to run the server
+  * "npm run test" to run the tests
+  * "npm run coverage" to create unit test covegare files
+  
   Postman collection already provided in the folder "postman collections".
 
 
