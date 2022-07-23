@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 const ProductModel = require("../models/product-model");
+const isEmpty = require("../../utils/isEmpty");
 
 exports.create = (req, res) => {
-  // check
   if (!req.body) {
     res.status(400);
     res.send({ message: "Body cannot be empty" });
@@ -11,7 +11,7 @@ exports.create = (req, res) => {
 
   const images = [];
 
-  if (req.files) {
+  if (!isEmpty(req.files)) {
     req.files.forEach((file) => {
       images.push({
         _id: new mongoose.Types.ObjectId(),
@@ -22,19 +22,17 @@ exports.create = (req, res) => {
     });
   }
 
-  // new user
   const product = new ProductModel({
     name: req.body.name,
     images: images,
   });
 
-  // save in DB
   product
     .save()
     .then((data) => {
       res
         .status(201)
-        .send(`product inserted successfully with id: ${product._id}`);
+        .send(`product created successfully with id: ${product._id}`);
     })
     .catch((err) => {
       res
@@ -46,38 +44,39 @@ exports.create = (req, res) => {
 exports.findProductById = async (req, res) => {
   const id = req.params?.id;
 
-  if (mongoose.Types.ObjectId.isValid(id)) {
-    try {
-      const productData = await ProductModel.findById(id);
-      if (!productData) {
-        res.status(404);
-        res.send({ message: `product with id ${id} not found` });
-      } else {
-        res.status(200);
-        res.send(productData);
-      }
-    } catch (err) {
-      res.status(500);
-      res.send({
-        message: err.message || `error retriving user with id: ${id}`,
-      });
-    }
-  } else {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400);
     res.send({ message: "not valid id" });
+    return;
   }
+
+  ProductModel.findById(id, function (err, doc) {
+    if (err) {
+      res.status(500);
+      res.send({
+        message: err.message,
+      });
+    } else if (!doc) {
+      res.status(404);
+      res.send({
+        message: `product with id: ${id} not found`,
+      });
+    } else {
+      res.status(200);
+      res.send(doc);
+    }
+  });
 };
 
 exports.update = (req, res) => {
   const id = req.params?.id;
-  console.log(req.body);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(400);
     res.send({ message: "not valid id" });
     return;
   }
-  if (Object.keys(req.body).length === 0) {
+  if (isEmpty(req.body)) {
     res.status(400);
     res.send({ message: "body can not be empty" });
     return;
@@ -85,7 +84,7 @@ exports.update = (req, res) => {
 
   const images = [];
 
-  if (req.files) {
+  if (!isEmpty(req.files)) {
     req.files.forEach((file) => {
       images.push({
         _id: new mongoose.Types.ObjectId(),
@@ -97,22 +96,29 @@ exports.update = (req, res) => {
   }
 
   ProductModel.findByIdAndUpdate(
-    { _id: id },
+    id,
     {
       name: req.body.name,
       $push: { images: { $each: images } },
     },
-    { returnOriginal: false }
-  )
-    .then((data) => {
-      res.status(200);
-      res.send(data);
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .send({ message: err.message || `error updating user with id: ${id}` });
-    });
+    { returnOriginal: false },
+    function (err, doc) {
+      if (err) {
+        res.status(500);
+        res.send({
+          message: err.message || `error updating product with id: ${id}`,
+        });
+      } else if (!doc) {
+        res.status(404);
+        res.send({
+          message: ` product with id: ${id} not found`,
+        });
+      } else {
+        res.status(200);
+        res.send(doc);
+      }
+    }
+  );
 };
 
 // delete report
@@ -125,20 +131,19 @@ exports.remove = (req, res) => {
     return;
   }
 
-  ProductModel.findByIdAndDelete(id)
-    .then((data) => {
-      if (!data) {
-        res.status(404);
-        res.send({
-          message: `error deleting product with id: ${id}, it may be already deleted`,
-        });
-      } else {
-        res.status(200);
-        res.send({ message: "product deleted successfully" });
-      }
-    })
-    .catch((err) => {
+  ProductModel.findByIdAndDelete(id, function (err, doc) {
+    if (err) {
       res.status(500);
-      res.send({ message: err.message || `error deleting product` });
-    });
+      res.send({ message: err.message });
+    }
+    if (!doc) {
+      res.status(404);
+      res.send({
+        message: `error deleting product with id: ${id}, it may be already deleted`,
+      });
+    } else {
+      res.status(200);
+      res.send({ message: "product deleted successfully" });
+    }
+  });
 };

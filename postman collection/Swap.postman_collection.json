@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "c2aa6435-15b1-4ff7-9ed4-c56159cdd024",
+		"name": "Swap",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18390398"
+	},
+	"item": [
+		{
+			"name": "Create new swap order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user1",
+							"value": "62cf2e6e68097531a919a0f7",
+							"type": "text"
+						},
+						{
+							"key": "user2",
+							"value": "62cf2e6e68097531a919a0f7",
+							"type": "text"
+						},
+						{
+							"key": "product1",
+							"value": "pro1",
+							"type": "text"
+						},
+						{
+							"key": "product2",
+							"value": "pro2",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/swap",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"swap"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get swap order by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/swap/\"id here\"",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"swap",
+						"\"id here\""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "629692482c42c10e77399467",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update swap order",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user1",
+							"value": "62cf2e6e68097531a919a0f7",
+							"type": "text"
+						},
+						{
+							"key": "user2",
+							"value": "62cf2e6e68097531a919a0f7",
+							"type": "text"
+						},
+						{
+							"key": "product1",
+							"value": "62cf2e6e68097531a919a0fq",
+							"type": "text"
+						},
+						{
+							"key": "product2",
+							"value": "62cf2e6e68097531a919a0f7",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/swap/\"id here\"",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"swap",
+						"\"id here\""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete swap order",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/swap/\"id here\"",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"swap",
+						"\"id here\""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

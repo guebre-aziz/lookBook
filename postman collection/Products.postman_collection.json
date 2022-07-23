@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "6989f6a2-ada7-4f81-a261-e831f1f1759d",
+		"name": "Products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18390398"
+	},
+	"item": [
+		{
+			"name": "Create new product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "name",
+							"type": "text"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": "/C:/Users/AbdoulAziz/Pictures/sfondi windows/78249ea92088d2da4d084ebda46550c2a079002aab1ed7aba5519cf6ea02536b.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get product by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products/\"id here\"",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"\"id here\""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "629692482c42c10e77399467",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update product",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "name updated",
+							"type": "text"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": "/C:/Users/AbdoulAziz/Pictures/sfondi windows/bfc32f8c8cd0ca9b816bb1d204f44e2a0ce381450a6e918b1194baf77cc8eddf.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products/\"id here\"",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"\"id here\""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/products/\"id here\"",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"products",
+						"\"id here\""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

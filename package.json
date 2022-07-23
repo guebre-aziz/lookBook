@@ -2,9 +2,9 @@
   "name": "lookbook",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "./src/server.js",
   "scripts": {
-    "test": "mocha --recursive",
+    "test": "mocha --recursive src/test/**/*.js ",
     "start": "nodemon server.js",
     "coverage": "nyc --reporter=lcov --reporter=text npm run test"
   },
