@@ -118,7 +118,7 @@ exports.update = async (req, res) => {
   } catch (err) {
     res.status(500);
     res.send({
-      message: err.message || `error updating product with id: ${id}`,
+      message: err.message,
     });
   }
 };

@@ -16,17 +16,17 @@
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "name",
+							"value": "",
 							"type": "text"
 						},
 						{
 							"key": "surname",
-							"value": "surname",
+							"value": "",
 							"type": "text"
 						},
 						{
 							"key": "email",
-							"value": "email@email.comd",
+							"value": "",
 							"type": "text"
 						}
 					]
@@ -72,7 +72,7 @@
 					]
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/users/\"id here\"",
+					"raw": "{{baseUrl}}/api/v1/users/searchById/\"id\"",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -80,14 +80,8 @@
 						"api",
 						"v1",
 						"users",
-						"\"id here\""
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "629692482c42c10e77399467",
-							"disabled": true
-						}
+						"searchById",
+						"\"id\""
 					]
 				}
 			},
@@ -103,23 +97,23 @@
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "name updated",
+							"value": "",
 							"type": "text"
 						},
 						{
 							"key": "surname",
-							"value": "surname updated",
+							"value": "",
 							"type": "text"
 						},
 						{
 							"key": "email",
-							"value": "email updated",
+							"value": "",
 							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/users/\"id here\"",
+					"raw": "{{baseUrl}}/api/v1/users/\"id\"",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -127,7 +121,7 @@
 						"api",
 						"v1",
 						"users",
-						"\"id here\""
+						"\"id\""
 					]
 				}
 			},
@@ -139,7 +133,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/users/\"id here\"",
+					"raw": "{{baseUrl}}/api/v1/users/\"id\"",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -147,7 +141,7 @@
 						"api",
 						"v1",
 						"users",
-						"\"id here\""
+						"\"id\""
 					],
 					"query": [
 						{

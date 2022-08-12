@@ -77,7 +77,9 @@ exports.update = async (req, res) => {
       email: req.body.email,
     };
 
-    const user = await UserModel.findByIdAndUpdate(id, data);
+    const user = await UserModel.findByIdAndUpdate(id, data, {
+      returnOriginal: false,
+    });
 
     if (user) {
       res.status(200);

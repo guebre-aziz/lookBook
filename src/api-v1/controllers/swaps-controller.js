@@ -119,7 +119,7 @@ exports.update = async (req, res) => {
     }
 
     const swap = await SwapModel.findByIdAndUpdate(
-      { _id: id },
+      id,
       {
         swapUsersId: [
           new ObjectId(req.body.user1),
@@ -147,6 +147,7 @@ exports.update = async (req, res) => {
     res.send({
       message: err.message,
     });
+    console.log(err);
   }
 };
 
