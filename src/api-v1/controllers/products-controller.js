@@ -1,149 +1,151 @@
 const mongoose = require("mongoose");
 const ProductModel = require("../models/product-model");
+const ObjectId = mongoose.Types.ObjectId;
 const isEmpty = require("../../utils/isEmpty");
 
-exports.create = (req, res) => {
-  if (!req.body) {
-    res.status(400);
-    res.send({ message: "Body cannot be empty" });
-    return;
-  }
+exports.create = async (req, res) => {
+  try {
+    if (isEmpty(req.body)) {
+      res.status(400);
+      res.send({ message: "Body cannot be empty" });
+      return;
+    }
 
-  const images = [];
+    const images = [];
 
-  if (!isEmpty(req.files)) {
-    req.files.forEach((file) => {
-      images.push({
-        _id: new mongoose.Types.ObjectId(),
-        originalname: file.originalname,
-        path: file.path,
-        size: file.size,
+    if (!isEmpty(req.files)) {
+      req.files.forEach((file) => {
+        images.push({
+          _id: new ObjectId(),
+          originalname: file.originalname,
+          path: file.path,
+          size: file.size,
+        });
       });
+    }
+
+    const product = new ProductModel({
+      name: req.body.name,
+      userId: new ObjectId(req.body.createdBy),
+      images: images,
     });
+
+    await product.save().then((data) => {
+      res.status(201);
+      res.send(`product created successfully with id: ${product._id}`);
+    });
+  } catch (err) {
+    res.status(500);
+    res.send({ message: err.message || "error inserting product" });
   }
-
-  const product = new ProductModel({
-    name: req.body.name,
-    images: images,
-  });
-
-  product
-    .save()
-    .then((data) => {
-      res
-        .status(201)
-        .send(`product created successfully with id: ${product._id}`);
-    })
-    .catch((err) => {
-      res
-        .status(500)
-        .send({ message: err.message || "error inserting product" });
-    });
 };
 
 exports.findProductById = async (req, res) => {
-  const id = req.params?.id;
+  try {
+    const id = req.params?.id;
+    if (!ObjectId.isValid(id)) {
+      res.status(400);
+      res.send({ message: "not valid id" });
+      return;
+    }
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(400);
-    res.send({ message: "not valid id" });
-    return;
-  }
+    const product = await ProductModel.findById(id);
 
-  ProductModel.findById(id, function (err, doc) {
-    if (err) {
-      res.status(500);
-      res.send({
-        message: err.message,
-      });
-    } else if (!doc) {
+    if (product) {
+      res.status(200);
+      res.send(product);
+    } else {
       res.status(404);
       res.send({
         message: `product with id: ${id} not found`,
       });
-    } else {
-      res.status(200);
-      res.send(doc);
     }
-  });
-};
-
-exports.update = (req, res) => {
-  const id = req.params?.id;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(400);
-    res.send({ message: "not valid id" });
-    return;
-  }
-  if (isEmpty(req.body)) {
-    res.status(400);
-    res.send({ message: "body can not be empty" });
-    return;
-  }
-
-  const images = [];
-
-  if (!isEmpty(req.files)) {
-    req.files.forEach((file) => {
-      images.push({
-        _id: new mongoose.Types.ObjectId(),
-        originalname: file.originalname,
-        path: file.path,
-        size: file.size,
-      });
+  } catch (err) {
+    res.status(500);
+    res.send({
+      message: err.message,
     });
   }
-
-  ProductModel.findByIdAndUpdate(
-    id,
-    {
-      name: req.body.name,
-      $push: { images: { $each: images } },
-    },
-    { returnOriginal: false },
-    function (err, doc) {
-      if (err) {
-        res.status(500);
-        res.send({
-          message: err.message || `error updating product with id: ${id}`,
-        });
-      } else if (!doc) {
-        res.status(404);
-        res.send({
-          message: ` product with id: ${id} not found`,
-        });
-      } else {
-        res.status(200);
-        res.send(doc);
-      }
-    }
-  );
 };
 
-// delete report
-exports.remove = (req, res) => {
-  const id = req.params?.id;
+exports.update = async (req, res) => {
+  try {
+    const id = req.params?.id;
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    res.status(400);
-    res.send({ message: "not valid id" });
-    return;
-  }
-
-  ProductModel.findByIdAndDelete(id, function (err, doc) {
-    if (err) {
-      res.status(500);
-      res.send({ message: err.message });
+    if (!ObjectId.isValid(id)) {
+      res.status(400);
+      res.send({ message: "not valid id" });
+      return;
     }
-    if (!doc) {
+    if (isEmpty(req.body)) {
+      res.status(400);
+      res.send({ message: "body can not be empty" });
+      return;
+    }
+
+    const images = [];
+
+    if (!isEmpty(req.files)) {
+      req.files.forEach((file) => {
+        images.push({
+          _id: new ObjectId(),
+          originalname: file.originalname,
+          path: file.path,
+          size: file.size,
+        });
+      });
+    }
+
+    const product = await ProductModel.findByIdAndUpdate(
+      id,
+      {
+        name: req.body.name,
+        userId: new ObjectId(req.body.userId),
+        $push: { images: { $each: images } },
+      },
+      { returnOriginal: false }
+    );
+
+    if (product) {
+      res.status(200);
+      res.send(product);
+    } else {
+      res.status(404);
+      res.send({
+        message: ` product with id: ${id} not found`,
+      });
+    }
+  } catch (err) {
+    res.status(500);
+    res.send({
+      message: err.message || `error updating product with id: ${id}`,
+    });
+  }
+};
+
+exports.remove = async (req, res) => {
+  try {
+    const id = req.params?.id;
+
+    if (!ObjectId.isValid(id)) {
+      res.status(400);
+      res.send({ message: "not valid id" });
+      return;
+    }
+
+    const product = await ProductModel.findByIdAndDelete(id);
+
+    if (product) {
+      res.status(200);
+      res.send({ message: "product deleted successfully" });
+    } else {
       res.status(404);
       res.send({
         message: `error deleting product with id: ${id}, it may be already deleted`,
       });
-    } else {
-      res.status(200);
-      res.send({ message: "product deleted successfully" });
     }
-  });
+  } catch (err) {
+    res.status(500);
+    res.send({ message: err.message });
+  }
 };

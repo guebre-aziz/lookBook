@@ -8,6 +8,6 @@ const swapSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const SwapModel = mongoose.model("swap-orders", swapSchema);
+const SwapModel = mongoose.model("swaps", swapSchema);
 
 module.exports = SwapModel;

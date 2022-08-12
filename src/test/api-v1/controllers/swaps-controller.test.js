@@ -4,16 +4,10 @@ const sinon = require("sinon");
 const sinonChai = require("sinon-chai");
 const {
   findSwapById,
-} = require("../../../api-v1/controllers/swap-orders-controller");
-const {
-  create,
-} = require("../../../api-v1/controllers/swap-orders-controller");
-const {
-  update,
-} = require("../../../api-v1/controllers/swap-orders-controller");
-const {
-  remove,
-} = require("../../../api-v1/controllers/swap-orders-controller");
+} = require("../../../api-v1/controllers/swaps-controller");
+const { create } = require("../../../api-v1/controllers/swaps-controller");
+const { update } = require("../../../api-v1/controllers/swaps-controller");
+const { remove } = require("../../../api-v1/controllers/swaps-controller");
 const expect = chai.expect;
 chai.use(sinonChai);
 const {
@@ -82,7 +76,7 @@ describe("Swap orders controller functions tests", () => {
     const err = new Error("error");
 
     it("should return status 200 and swap order data if found", async () => {
-      sinon.stub(mongoose.Model, "findById").yields(null, doc);
+      sinon.stub(mongoose.Model, "findById").resolves(doc);
       await findSwapById(req, res);
 
       expect(res.status).to.have.been.calledWith(200);
@@ -90,7 +84,7 @@ describe("Swap orders controller functions tests", () => {
     });
 
     it("should return status 404 if swap order not found", async () => {
-      sinon.stub(mongoose.Model, "findById").yields(null, null);
+      sinon.stub(mongoose.Model, "findById").resolves(null);
       await findSwapById(req, res);
 
       expect(res.status).to.have.been.calledWith(404);
@@ -104,7 +98,7 @@ describe("Swap orders controller functions tests", () => {
     });
 
     it("should return status 500 and error message error occurred", async () => {
-      sinon.stub(mongoose.Model, "findById").yields(err, null);
+      sinon.stub(mongoose.Model, "findById").throws({ message: "error" });
 
       findSwapById(req, res);
 
@@ -129,7 +123,7 @@ describe("Swap orders controller functions tests", () => {
     const err = new Error("error");
 
     it("should return status 200 and data updated", async () => {
-      sinon.stub(mongoose.Model, "findByIdAndUpdate").yields(null, doc);
+      sinon.stub(mongoose.Model, "findByIdAndUpdate").resolves(doc);
       const req = {
         params: { id: new mongoose.Types.ObjectId() },
         body: "body",
@@ -164,7 +158,7 @@ describe("Swap orders controller functions tests", () => {
     });
 
     it("should return status 404 if user not found", async () => {
-      sinon.stub(mongoose.Model, "findByIdAndUpdate").yields(null, null);
+      sinon.stub(mongoose.Model, "findByIdAndUpdate").resolves(null);
       const req = {
         params: { id: new mongoose.Types.ObjectId() },
         body: "body",
@@ -175,7 +169,9 @@ describe("Swap orders controller functions tests", () => {
     });
 
     it("should return status 500 and error message if error occurred", async () => {
-      sinon.stub(mongoose.Model, "findByIdAndUpdate").yields(err, null);
+      sinon
+        .stub(mongoose.Model, "findByIdAndUpdate")
+        .throws({ message: "error" });
       const req = {
         params: { id: new mongoose.Types.ObjectId() },
         body: "body",
@@ -202,7 +198,7 @@ describe("Swap orders controller functions tests", () => {
     const err = new Error("error");
 
     it("should return status 200 and successfull message", async () => {
-      sinon.stub(mongoose.Model, "findByIdAndDelete").yields(null, doc);
+      sinon.stub(mongoose.Model, "findByIdAndDelete").resolves(doc);
       const req = {
         params: { id: new mongoose.Types.ObjectId() },
       };
@@ -210,7 +206,7 @@ describe("Swap orders controller functions tests", () => {
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({
-        message: "swap order deleted successfully",
+        message: "swap deleted successfully",
       });
     });
 
@@ -225,7 +221,7 @@ describe("Swap orders controller functions tests", () => {
     });
 
     it("should return status 404 if swap order not found", async () => {
-      sinon.stub(mongoose.Model, "findByIdAndDelete").yields(null, null);
+      sinon.stub(mongoose.Model, "findByIdAndDelete").resolves(null);
       const req = {
         params: { id: new mongoose.Types.ObjectId() },
       };
@@ -235,7 +231,9 @@ describe("Swap orders controller functions tests", () => {
     });
 
     it("should return status 500 and error message if error occurred", async () => {
-      sinon.stub(mongoose.Model, "findByIdAndDelete").yields(err, null);
+      sinon
+        .stub(mongoose.Model, "findByIdAndDelete")
+        .throws({ message: "error" });
       const req = {
         params: { id: new mongoose.Types.ObjectId() },
       };
